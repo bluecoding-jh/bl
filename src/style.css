@@ -104,7 +104,6 @@
   transform: translate(-50%, -50%);
 }
 
-
 .bl-grid-resize-controler {
   position: absolute;
   top: 0;
@@ -112,7 +111,6 @@
   border-top: none;
   border-right: 1px dashed #333;
 }
-
 
 .bl-grid-column-header-toggle {
   font-size: 10px;
@@ -123,44 +121,36 @@
   color: #555;
 }
 
-
 .bl-grid-column-header-toggle:hover::before {
   opacity: 1;
 }
-
 
 .bl-grid-column-header-toggle::before {
   opacity: 0.5;
   content: '▶';
 }
 
-
 .bl-grid-column-header-toggle.open::before {
   opacity: 1;
   content: '◀';
 }
 
-
 .bl-grid-row.even {
   background-color: #fafafa;
 }
-
 
 .bl-grid-row.row-select > div {
   background-color: rgb(175, 204, 236);
 }
 
-
 .row-select-chk > div {
   background-color: rgb(145, 161, 231) !important;
 }
-
 
 /* paging */
 .bl-grid-paging {
   display: flex;
 }
-
 
 .bl-grid-paging-input {
   height: 24px !important;
@@ -169,7 +159,6 @@
   text-align: right;
   margin-right: 5px !important;
 }
-
 
 .bl-grid-paging-btn {
   font-size: 12px;
@@ -238,13 +227,11 @@
   height: 100%;
 }
 
-
 .bl-compare-corner-header-cell,
 .bl-compare-col-header-cell,
 .bl-compare-header-cell {
   background-color: #f1f1f1;
 }
-
 
 .bl-compare-col-header-cell,
 .bl-compare-cell {
@@ -253,7 +240,6 @@
   text-overflow: ellipsis;
   user-select: none;
 }
-
 
 .bl-compare-row-header-wrap,
 .bl-compare-cell {
@@ -264,7 +250,6 @@
   border-right: 1px solid #dddddd;
   border-bottom: 1px solid #dddddd;
 }
-
 
 .bl-compare-header-group {
 }
