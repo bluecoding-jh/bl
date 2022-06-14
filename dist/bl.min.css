@@ -1,0 +1,230 @@
+
+/* common */
+.left-align {
+  text-align: left;
+}
+.right-align {
+  text-align: right;
+}
+.center-align {
+  text-align: center;
+}
+
+.center-valign {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow:hidden;
+}
+
+
+/* grid */
+.bl-grid-wrap *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+.bl-grid-wrap {
+  width: 100%;
+  border: 1px solid #cdcdcd;
+  position: relative;
+  user-select: none;
+  cursor: default;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.bl-grid-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.bl-grid-row-header.freezing,
+.bl-grid-corner-header.freezing {
+  border-right:4px double #bebebe;
+  overflow: hidden;
+}
+
+.bl-grid-corner-header-cell,
+.bl-grid-column-header-cell,
+.bl-grid-row-header-cell {
+  background-color: #f1f1f1;
+}
+
+.bl-grid-cell,
+.bl-grid-column-header-cell,
+.bl-grid-corner-header-cell,
+.bl-grid-row-header-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+.bl-grid-cell > div {
+
+}
+.bl-grid-row-header-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: none;
+  width: 100%;
+  height: 100%;
+}
+
+.bl-grid-row-header-cell {}
+
+.bl-grid-cell-border {
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+.bl-grid-row-header-select {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bl-grid-resize-controler {
+  position: absolute;
+  top: 0;
+  left: auto;
+  border-top: none;
+  border-right: 1px dashed #333;
+}
+
+.bl-grid-column-header-toggle {
+  font-size:10px;
+  width:14px;
+  height:14px;
+  margin-left:3px;
+  cursor:pointer;
+  color:#555;
+}
+.bl-grid-column-header-toggle:hover::before {
+  opacity: 1;
+}
+.bl-grid-column-header-toggle::before {
+  opacity:0.5;
+  content:'▶';
+}
+
+.bl-grid-column-header-toggle.open::before {
+  opacity:1;
+  content:'◀';
+}
+
+.bl-grid-row.even {
+  background-color:#fafafa;
+}
+.bl-grid-row.row-select > div {
+  background-color:rgb(175, 204, 236);
+}
+
+
+.row-select-chk > div {
+  background-color:rgb(145, 161, 231) !important;
+}
+
+/* paging */
+.bl-grid-paging {
+  display:flex;
+}
+
+.bl-grid-paging-input {
+  height: 24px !important;
+  width: 40px !important;
+  border: 1px solid #dddddd !important;
+  text-align: right;
+  margin-right: 5px !important;
+}
+
+.bl-grid-paging-btn {
+  font-size:12px;
+  font-weight:bold;
+  width:30px;
+  height:24px;
+  text-align:center;
+  padding:4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin:0 5px;
+  cursor: pointer;
+  border-radius:4px;
+  letter-spacing:-2px;
+}
+.bl-grid-paging-btn:not(.disabled):hover {
+  background-color:#aaa;
+}
+.bl-grid-paging-btn.disabled {
+  opacity:0.3;
+}
+.bl-grid-column-sorting{
+  width: 0;
+  height: 0;
+  display: inline-block;
+}
+.bl-grid-column-sorting-asc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #555;
+}
+.bl-grid-column-sorting-desc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #555;
+}
+
+/* compare */
+
+.bl-compare-wrap *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+.bl-compare-wrap {
+  width: 100%;
+  border: 1px solid #cdcdcd;
+  position: relative;
+  user-select: none;
+  cursor: default;
+  font-size: 13px;
+}
+.bl-compare-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.bl-compare-corner-header-cell,
+.bl-compare-col-header-cell,
+.bl-compare-header-cell {
+  background-color:#f1f1f1;
+}
+
+.bl-compare-col-header-cell,
+.bl-compare-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+.bl-compare-row-header-wrap .bl-compare-cell {
+  padding: 5px;
+}
+.bl-compare-cell-border {
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+.bl-compare-header-group {
+
+}
