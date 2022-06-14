@@ -1,0 +1,48 @@
+{
+  "name": "bl_library",
+  "version": "0.3.9",
+  "main": "index.js",
+  "author": "Jonghwan Lee",
+  "license": "MIT",
+  "scripts": {
+    "prod": "webpack --config webpack.prod.js",
+    "dev": "webpack serve --open --config webpack.dev.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/plugin-transform-arrow-functions": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-stage-2": "^7.8.3",
+    "@babel/runtime-corejs3": "^7.14.7",
+    "@types/react": "^18.0.6",
+    "axios": "^0.23.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "bluebird": "^3.7.2",
+    "core-js": "^3.15.2",
+    "core-js-pure": "^3.15.2",
+    "css-loader": "^6.3.0",
+    "css-minimizer-webpack-plugin": "^3.0.2",
+    "file-saver": "^2.0.5",
+    "formdata-polyfill": "^4.0.7",
+    "html-webpack-plugin": "^5.3.2",
+    "lodash": "^4.17.21",
+    "mini-css-extract-plugin": "^2.3.0",
+    "regenerator-runtime": "^0.13.7",
+    "terser-webpack-plugin": "^5.2.4",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "uuid": "^8.3.2",
+    "webpack": "^5.45.1",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.8.0",
+    "xlsx": "^0.18.5"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "sheetjs": "^2.0.0"
+  }
+}
