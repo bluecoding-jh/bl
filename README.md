@@ -80,7 +80,7 @@ const config = {
   // paging 기능이 server일때 사용될 옵션
   // 현재 paging server 미개발로 사용되지 않음
   server: {
-    url: '/api/pdsm/dfmea/getDesignParameterIndexData',
+    url: url,
     param: {},
     type: 'GET',
   }, // paging : server 일때 (Object)
