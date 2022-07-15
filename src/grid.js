@@ -2017,14 +2017,13 @@ Grid.prototype.downloadExcel = function (title) {
 
   const sheetData = sheetColumns.concat(newData);
 
-  title = title || 'DFMEA_비교';
+  title = title || 'excel_download';
   wb.props = {
     title: title,
   };
-  wb.SheetNames.push('DFMEA비교');
+  wb.SheetNames.push(title);
   var ws = XLSX.utils.aoa_to_sheet(sheetData);
-  wb.Sheets['DFMEA비교'] = ws;
-
+  wb.Sheets[title] = ws;
   const wbout = XLSX.write(wb, {
     bookType: 'xlsx',
     type: 'binary'
