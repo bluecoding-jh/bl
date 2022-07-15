@@ -1,15 +1,16 @@
 import Commons from './commons';
+import _ from 'lodash';
 import saveAs from 'file-saver';
 import * as XLSX from 'xlsx';
 
 function Grid(id, columns, data, config = {
-  theme: 'default', // (String) 'default', 'clean', 'dark'
+  theme: 'default', // (String) 'default', 'clean', 'dark' 
   rowHeader: 'none', // (String) 'checkbox', 'no', 'both', 'none',
   headerGroupFold: false, //(boolean) true, false
   paging: 'none', //(String) 'client', 'server', 'none'
   infiniteScroll: false, // (boolean) true, false ||| infiniteScroll이 false 일 경우에도 data의 길이가 300 이상이라면 true 로 변경됨
   sort: false, // (boolean) true, false
-  viewCount: [10, 20, 30, 50, 100], // (List) Number..
+  viewCount: [10, 20, 30, 50, 100], // (List) Number.. 
   freeze: 0,
   columnHeaderHeight: 33,
 }, eventHandler) {
@@ -325,7 +326,7 @@ Grid.prototype.init = function (type, common) {
         _this._dataSource.config['infiniteScroll'] = false;
       }
     } else {
-      // 재로드
+      // 재로드 
       // type 종류 : reload, paging, paging2(페이지 ROW 카운트 변경)...
       tempScroll = 0;
       for (let key in option.dataFields) {
@@ -345,7 +346,7 @@ Grid.prototype.init = function (type, common) {
           break;
         case 'paging2':
           idx = 0;
-          leng = control.viewerDataCount - 1;
+          leng = control.viewerDataCount > control.viewerRowCount ? control.viewerRowCount : control.viewerDataCount - 1;
           control.paging.current = 0;
           control.top = 0;
           break;
@@ -397,6 +398,10 @@ Grid.prototype.init = function (type, common) {
       </div>`;
     setScrollPosition();
     setDefaultEvent(pagingCheck);
+
+    document.querySelector(`#bl-grid-column-header-${_id}`).querySelectorAll('input, select, button').forEach(item => {
+      item.setAttribute('tabIndex', '-1');
+    })
 
     if (_this._dataSource.config.hasOwnProperty('loadCallback')) {
       _this._dataSource.config.loadCallback(_this);
@@ -555,8 +560,11 @@ Grid.prototype.init = function (type, common) {
     let
       _height = _this._dom.clientHeight - (option.columnHeaderHeight * option.childrenDepth) - option.horizontalScrollChecked - (pagingCheck ? 50 : 0),
       tmpl = '';
+
+    control.viewerRowCount = Math.ceil(_height / option.rowHeight);
+
     idx = idx == undefined ? 0 : idx;
-    leng = leng == undefined ? control.viewerDataCount - 1 : leng;
+    leng = leng == undefined ? control.viewerRowCount : leng;
 
     if (_this._dataSource.config.rowHeader !== 'none') {
       tmpl = `<div class="bl-grid-row-header" id="bl-grid-row-header-${_id}"
@@ -582,7 +590,7 @@ Grid.prototype.init = function (type, common) {
       tmpl = '',
       no = 0;
 
-    for (let i = idx; i <= leng; i++) {
+    for (let i = idx; i < leng; i++) {
 
       if (document.querySelector(`#bl-grid-row-header-${_id} .bl-grid-row-header[data-row-idx='${i}']`)) {
         continue;
@@ -601,11 +609,11 @@ Grid.prototype.init = function (type, common) {
         }
         if (_this._dataSource.config.rowHeader === 'checkbox') {
           tmpl += `<div class="bl-grid-row-header ${chk ? 'row-select-chk' : ''}" data-row-idx="${i}" role="row" style="position:absolute;top:${no*option.rowHeight}px;width:${option.cornerHeaderWidth}px;height:${option.rowHeight}px;">
-                  <div class="bl-grid-row-header-cell bl-grid-cell-border"><input type="checkbox" class="bl-grid-row-header-select" ${chk ? 'checked' : ''}></div></div>`;
+                  <div class="bl-grid-row-header-cell bl-grid-cell-border"><input type="checkbox" class="bl-grid-row-header-select" ${chk ? 'checked' : ''} data-idx="${i}" /></div></div>`;
         } else if (_this._dataSource.config.rowHeader === 'both') {
           tmpl += `<div class="bl-grid-row-header ${chk ? 'row-select-chk' : ''}" data-row-idx="${i}" role="row" style="position:absolute;top:${no*option.rowHeight}px;width:${option.cornerHeaderWidth}px;height:${option.rowHeight}px;">
                     <div class="bl-grid-row-header-cell bl-grid-cell-border" style="width:50%;height:100%;position:absolute;left:0;">
-                      <input type="checkbox" class="bl-grid-row-header-select" ${chk ? 'checked' : ''}>
+                      <input type="checkbox" class="bl-grid-row-header-select" ${chk ? 'checked' : ''} data-idx="${i}" />
                     </div>
                     <div class="bl-grid-row-header-cell bl-grid-cell-border" style="width:50%;height:100%;position:absolute;left:50px;">
                       <div class="center-align center-valign">${i+1}</div>
@@ -627,8 +635,7 @@ Grid.prototype.init = function (type, common) {
     let _height = _this._dom.clientHeight - (option.columnHeaderHeight * option.childrenDepth) - option.horizontalScrollChecked - (pagingCheck ? 50 : 0);
 
     idx = idx == undefined ? 0 : idx;
-    leng = leng == undefined ? control.viewerDataCount - 1 : leng;
-
+    leng = leng == undefined ? control.viewerRowCount : leng;
     control.startDataIdx = idx;
     control.endDataIdx = leng;
 
@@ -647,7 +654,7 @@ Grid.prototype.init = function (type, common) {
     let
       tmpl = '',
       no = 0;
-    for (let i = idx; i <= leng; i++) {
+    for (let i = idx; i < leng; i++) {
       if (rowHeaderChk) {
         if (document.querySelector(`#bl-grid-row-header-${_id} .bl-grid-row[data-row-idx='${i}']`)) {
           continue;
@@ -657,7 +664,7 @@ Grid.prototype.init = function (type, common) {
           continue;
         }
       }
-
+      console.log(`🐱‍🚀 create row ${i} / start : ${idx} / end : ${leng} / diff : ${idx - leng}`)
       let chk = false;
       no = pagingCheck ? i - (control.paging.current * control.viewerDataCount) : i;
       no = no < 0 ? 0 : no;
@@ -691,6 +698,7 @@ Grid.prototype.init = function (type, common) {
       //let freeFieldCount = Object.keys(option.dataFields).length;
       let freezeFieldCount = 0;
       const _field = {};
+      let colIdx = 0;
 
       for (let k in option.dataFields) {
         option.dataFields[k].freezeChk && freezeFieldCount++;
@@ -720,9 +728,10 @@ Grid.prototype.init = function (type, common) {
         if (_field[key].hasOwnProperty('edit') && _field[key].edit) {
           tmpl += `<div class="bl-grid-cell bl-grid-cell-border cell${key} ${_field[key2].className ? _field[key2].className : ''}" data-column="${_field[key].name}" style="position:absolute;left:${left}px;width:${_field[key].width}px;height:${option.rowHeight}px;">
                     <div class="${_field[key].align} center-valign" style="width:100%;height:100%;padding:0.25rem;">
-                    ${getCellEdit(_field[key].edit, idx, _field[key].name, data[_field[key].name])}
+                    ${getCellEdit(_field[key].edit, idx, _field[key].name, data[_field[key].name], colIdx)}
                     </div>
               </div>`;
+          colIdx++;
         } else {
           tmpl += `<div class="bl-grid-cell bl-grid-cell-border cell${key} ${_field[key2].className ? _field[key2].className : ''}" data-column="${_field[key].name}" style="position:absolute;left:${left}px;width:${_field[key].width}px;height:${option.rowHeight}px;">
                     <div class="${_field[key].align} center-valign" style="width:calc(100% - 10px);">
@@ -733,7 +742,7 @@ Grid.prototype.init = function (type, common) {
         _left = left;
       }
 
-      function getCellEdit(edit, idx, nm, data) {
+      function getCellEdit(edit, idx, nm, data, colIdx) {
         let editTmpl = '';
         const type = edit.type;
         switch (type) {
@@ -744,6 +753,7 @@ Grid.prototype.init = function (type, common) {
                           name="${nm}"
                           data-edit-type="${type}"
                           data-idx="${idx}"
+                          data-col-idx="${colIdx}"
                           data-key=${nm}
                           style="width:100%;height:100%;border:0;"
                           ${data ? 'value="'+data+'"' : '' }
@@ -758,17 +768,20 @@ Grid.prototype.init = function (type, common) {
                           name="${nm}"
                           data-edit-type="${type}"
                           data-idx="${idx}"
+                          data-col-idx="${colIdx}"
                           data-key=${nm}
                           style="width:100%;height:100%;border:0;">
                           ${edit.options.map(opt => {
-              return '<option value="'+ opt +'" '+ (opt === data ? 'selected' : '') +'>'+opt+'</option>';
-            }).join('')}
+                            return '<option value="'+ opt +'" '+ (opt === data ? 'selected' : '') +'>'+opt+'</option>';
+                          }).join('')}
                           </select>`
             break;
         }
 
         return editTmpl;
       }
+
+      option.editColumnCount = colIdx - 1;
       return tmpl;
     }
 
@@ -784,8 +797,12 @@ Grid.prototype.init = function (type, common) {
 
     return `<div class="bl-grid-column-header" id="bl-grid-column-header-${_id}" 
             style="position:absolute;top:0;left:${option.cornerHeaderWidth}px;width:${_this._dom.clientWidth - option.cornerHeaderWidth - option.verticalScrollChecked}px;height:${option.columnHeaderHeight*option.childrenDepth}px;overflow:hidden;">
-            <div id="bl-grid-column-header-inner-${_id}" style="position:relative;width:${option.contentWidth}px;height:height:${option.columnHeaderHeight*option.childrenDepth}px;transform:translate3d(0px, 0px, 0px)">
-              ${headerContent}
+            <div id="bl-grid-column-header-inner-${_id}" style="position:relative;width:${option.contentWidth}px;height:${option.columnHeaderHeight*option.childrenDepth}px;transform:translate3d(0px, 0px, 0px)">
+              <div
+                style="height:${option.columnHeaderHeight*option.childrenDepth}px;"
+                >
+                ${headerContent}
+              </div>
             </div>
           </div>`;
   }
@@ -806,7 +823,7 @@ Grid.prototype.init = function (type, common) {
         _left = calcPositionLeft(cols[i], cols[i - 1], i),
         _top = calcPositionTop(cols[i], depth, cols[i - 1], parentObj),
         _align = cols[i].hasOwnProperty('align') ?
-          (cols[i].align === 'left' ? 'left-align' : cols[i].align === 'right' ? 'right-align' : 'center-align') : 'center-align',
+        (cols[i].align === 'left' ? 'left-align' : cols[i].align === 'right' ? 'right-align' : 'center-align') : 'center-align',
         sortingChk = null,
         captionFormatterChk = cols[i].hasOwnProperty('captionFormatter');
 
@@ -1037,7 +1054,7 @@ Grid.prototype.init = function (type, common) {
         //     </div>
         //   `;
         return `
-            <div class="bl-grid-scroll-box scroll-top" id="bl-grid-vertical-scroll-${_id}" style="position:absolute;left:${_this._dom.clientWidth - 18}px;top:0px;width:18px;height:${_this._dom.clientHeight - checked - (pagingCheck ? 50 : 0)}px;overflow:auto;">
+            <div class="bl-grid-scroll-box scroll-top" id="bl-grid-vertical-scroll-${_id}" style="position:absolute;left:${_this._dom.clientWidth - 19}px;top:0px;width:18px;height:${_this._dom.clientHeight - checked - (pagingCheck ? 50 : 0)}px;overflow:auto;">
               <div style="position:relative;height:${pagingCheck ? (option.rowHeight * control.viewerDataCount) + (option.columnHeaderHeight * option.childrenDepth) : option.contentHeight + (option.columnHeaderHeight * option.childrenDepth)}px;width:1px;"></div>
             </div>
           `;
@@ -1063,11 +1080,20 @@ Grid.prototype.init = function (type, common) {
   function setDefaultEvent(pagingCheck) {
     const
       $wrap = document.querySelector(`#bl-grid-${_id}`),
-      $header = document.querySelector(`#bl-grid-column-header-${_id}`);
+      $header = document.querySelector(`#bl-grid-column-header-${_id}`),
+      $headerInner = document.querySelector(`#bl-grid-column-header-inner-${_id}`),
+      $viewer = $wrap.querySelector(`#bl-grid-viewer-${_id}`),
+      $viewerInner = $wrap.querySelector(`#bl-grid-viewer-inner-${_id}`),
+      $rowHeader = $wrap.querySelector(`#bl-grid-row-header-${_id}`),
+      $rowHeaderInner = $wrap.querySelector(`#bl-grid-row-header-inner-${_id}`);
+
+    const horizontalScroll = document.querySelector(`#bl-grid-horizontal-scroll-${_id}`);
+    const verticalScroll = document.querySelector(`#bl-grid-vertical-scroll-${_id}`);
 
     if (document.querySelector(`#bl-grid-horizontal-scroll-${_id}`)) {
       document.querySelector(`#bl-grid-horizontal-scroll-${_id}`).addEventListener('scroll', (event) => {
         control.left = event.target.scrollLeft !== 0 ? -event.target.scrollLeft : 0;
+        console.log('horizontal scroll event ', control.left)
         document.querySelector(`#bl-grid-column-header-inner-${_id}`).style.transform = `translate3d(${control.left}px, 0px, 0px)`;
         document.querySelector(`#bl-grid-viewer-inner-${_id}`).style.transform = `translate3d(${control.left}px, ${control.top}px, 0px)`;
       });
@@ -1079,6 +1105,8 @@ Grid.prototype.init = function (type, common) {
           sct = event.target.scrollTop !== 0 ? -event.target.scrollTop : 0,
           max = (event.target.scrollHeight - event.target.clientHeight) * -1,
           addCount = control.viewerDataCount;
+
+        // console.log('vertical scroll event ', sct)
 
         let temp = option.data.length;
 
@@ -1197,6 +1225,7 @@ Grid.prototype.init = function (type, common) {
 
     $wrap.querySelectorAll('.bl-grid-edit-cell').forEach(edit => {
       const type = edit.getAttribute('data-edit-type');
+
       if (type === 'input') {
         edit.addEventListener('keyup', (event) => {
           const idx = event.target.getAttribute('data-idx'),
@@ -1210,7 +1239,179 @@ Grid.prototype.init = function (type, common) {
           option.data[idx][nm] = event.target.value;
         })
       }
+
+      edit.addEventListener('focus', (event) => {
+        $wrap.querySelectorAll('.edit-active') && $wrap.querySelectorAll('.edit-active').forEach(active => {
+          active.classList.remove('edit-active');
+        })
+        event.target.parentNode.parentNode.classList.add('edit-active');
+      });
     });
+
+    // grid 내 field tab event
+    let minX = undefined;
+    let maxX = undefined;
+    let minY = undefined;
+    let maxY = undefined;
+    $viewerInner.addEventListener('keydown', (event) => {
+      if (!event.target.classList.contains('bl-grid-edit-cell')) {
+        return;
+      }
+
+      // next field
+      minX = $viewer.getBoundingClientRect().left;
+      maxX = $viewer.getBoundingClientRect().right;
+      minY = $viewer.getBoundingClientRect().top;
+      maxY = $viewer.getBoundingClientRect().bottom;
+
+      let row = event.target.getAttribute('data-idx'),
+        col = event.target.getAttribute('data-col-idx');
+
+      let target = null;
+      let tabChk = null;
+
+      if (!event.shiftKey && event.keyCode === 9) {
+        event.preventDefault();
+        console.log('tab 🚗');
+        tabChk = 'down';
+        target = document.querySelector(`.bl-grid-edit-cell[data-idx="${row}"][data-col-idx="${Number(col) + 1}"]`);
+        target = target || document.querySelector(`.bl-grid-edit-cell[data-idx="${Number(row) + 1}"][data-col-idx="${0}"]`);
+      }
+
+      // Prev field
+      if (event.shiftKey && event.keyCode === 9) {
+        console.log('shift + tab 🚗');
+        event.preventDefault();
+        tabChk = 'up';
+        target = document.querySelector(`.bl-grid-edit-cell[data-idx="${row}"][data-col-idx="${Number(col) - 1}"]`);
+        target = target || document.querySelector(`.bl-grid-edit-cell[data-idx="${Number(row) - 1}"][data-col-idx="${option.editColumnCount}"]`);
+      }
+
+      focusHandler(target, tabChk, 'edit');
+    });
+
+    $rowHeaderInner && $rowHeaderInner.addEventListener('keydown', (event) => {
+      if (!event.target.classList.contains('bl-grid-row-header-select')) {
+        return;
+      }
+
+      minX = undefined;
+      maxX = undefined;
+      minY = $rowHeader.getBoundingClientRect().top;
+      maxY = $rowHeader.getBoundingClientRect().bottom;
+
+      let row = Number(event.target.getAttribute('data-idx'));
+      let tabChk = null;
+
+      let target
+      if (!event.shiftKey && event.keyCode === 9) {
+        event.preventDefault();
+        console.log('tab 🚗');
+        tabChk = 'down';
+        target = document.querySelector(`.bl-grid-row-header-select[data-idx="${row + 1}"]`);
+      }
+
+      // Prev field
+      if (event.shiftKey && event.keyCode === 9) {
+        console.log('shift + tab 🚗');
+        event.preventDefault();
+        tabChk = 'up';
+        target = document.querySelector(`.bl-grid-row-header-select[data-idx="${row - 1}"]`);
+      }
+
+      focusHandler(target, tabChk, null);
+
+    })
+
+    function focusHandler(target, tabChk, type) {
+
+      if (!!target) {
+        const targetX = target.getBoundingClientRect().left;
+        const targetX2 = target.getBoundingClientRect().right;
+        const targetY = target.getBoundingClientRect().top;
+        const targetY2 = target.getBoundingClientRect().bottom;
+
+        target.focus({
+          preventScroll: true,
+        });
+
+        if (maxX < targetX2) {
+          console.log('>>>')
+          horizontalScroll.scrollLeft = Math.abs(control.left) + targetX2 - maxX;
+        }
+
+        if (minX > targetX) {
+          console.log('<<<')
+          horizontalScroll.scrollLeft = Math.abs(control.left) - (Math.abs(targetX) + minX);
+        }
+
+        if (maxY < targetY2) {
+          verticalScroll.scrollTop = Math.abs(control.top) + (targetY2 - maxY);
+        }
+
+        if (minY > targetY) {
+          console.log(minY, targetY)
+          verticalScroll.scrollTop = Math.abs(control.top) - (minY - targetY);
+        }
+      } else {
+        if (tabChk === 'down' || tabChk === 'up') {
+          let endRowChk = 0;
+          let heightValue = 0;
+          let rowIdx = 0;
+          let colIdx = 0;
+          switch (tabChk) {
+            case 'down':
+              endRowChk = pagingCheck ? (control.paging.current === 0 ? 1 : control.paging.current) * control.viewerDataCount : option.data.length;
+              heightValue = option.rowHeight;
+              rowIdx = control.endDataIdx;
+              colIdx = 0;
+              if (control.endDataIdx === endRowChk) {
+                if (!type) {
+                  verticalScroll.scrollTop = 0;
+                  setTimeout(function () {
+                    document.querySelector(`.bl-grid-edit-cell[data-idx="0"][data-col-idx="0"]`).focus();
+                  }, 100);
+                }
+                return;
+              }
+              break;
+            case 'up':
+              endRowChk = pagingCheck ? control.paging.current * control.viewerDataCount : 0;
+              heightValue = -option.rowHeight;
+              rowIdx = control.startDataIdx - 1;
+              colIdx = option.editColumnCount;
+              if (control.startDataIdx === endRowChk) {
+                if (type === 'edit') {
+                  const max = verticalScroll.scrollHeight - verticalScroll.clientHeight;
+                  const endNum = pagingCheck ? (control.paging.current === 0 ? 1 : control.paging.current) * control.viewerDataCount : option.data.length;
+                  const target = document.querySelector(`.bl-grid-row-header-select[data-idx="${endNum - 1}"]`);
+                  if (target) {
+                    verticalScroll.scrollTop = max;
+                    setTimeout(function () {
+                      document.querySelector(`.bl-grid-row-header-select[data-idx="${endNum - 1}"]`).focus();
+                    }, 100);
+                  }
+                } else {
+
+                }
+                return;
+              }
+              break;
+          }
+
+          console.log('None target??? 🤷‍♂️\nSo you have to check more datas for load!');
+          // 추가 행 삽입
+          changeDataRow(heightValue);
+          // 삽입 된 행 선택
+          const lastTarget = type === 'edit' ?
+            document.querySelector(`.bl-grid-row[data-row-idx="${rowIdx}"]`).querySelectorAll('.bl-grid-edit-cell')[colIdx] :
+            document.querySelector(`.bl-grid-row-header-select[data-idx="${rowIdx}"]`);
+
+          focusHandler(lastTarget);
+        }
+      }
+
+    }
 
     const delay = 250;
     let timer = null,
@@ -1284,7 +1485,7 @@ Grid.prototype.init = function (type, common) {
       });
     }
 
-    // COL HEADER 클릭 이벤트
+    // COL HEADER 클릭 이벤트 
     if (_this._dataSource.config.hasOwnProperty('sort') && _this._dataSource.config.sort) {
       for (let key in option.dataFields) {
         const colNm = option.dataFields[key].name;
@@ -1610,14 +1811,15 @@ Grid.prototype.init = function (type, common) {
       type = c > 0 ? 'down' : 'up',
       rowTarget = document.querySelector('#bl-grid-viewer-inner-' + _id),
       rowHeaderTarget = document.querySelector('#bl-grid-row-header-inner-' + _id),
-      pagingCheck = _this._dataSource.config.hasOwnProperty('paging') && _this._dataSource.config.paging !== 'none' ? true : false;
+      pagingCheck = _this._dataSource.config.hasOwnProperty('paging') && _this._dataSource.config.paging !== 'none' ? true : false,
+      rect = rowTarget.parentNode.getBoundingClientRect();
 
     let
       start = 0,
       end = 0,
       rowChk = true,
       no = 0;
-
+    console.log(c)
     control.top = control.top - c;
     document.querySelector(`#bl-grid-vertical-scroll-${_id}`).scrollTop = Math.abs(control.top);
     document.querySelector(`#bl-grid-viewer-inner-${_id}`).style.transform = `translate3d(${control.left}px, ${control.top}px, 0px)`;
@@ -1633,40 +1835,52 @@ Grid.prototype.init = function (type, common) {
       current = current + control.paging.current * control.paging.selectedCount;
     }
 
+    control.startDataIdx = current;
+    control.endDataIdx = current + control.viewerRowCount;
+
     if (type === 'down') {
       // 스크롤 다운
       // 상위 로우 제거
-      no = current - 1;
+
+      no = control.startDataIdx - 1;
       while (rowChk) {
         rowChk = removeRow(no);
         no--;
       }
-      // start = control.endDataIdx + 1;
+
+      console.log(current)
       start = control.endDataIdx;
-      end = current + control.viewerDataCount;
+      end = start + Math.abs(c / option.rowHeight);
     } else {
       // 스크롤 업
-      // 하위 로우 제거
-      no = current + control.viewerDataCount + 1;
+      // 하위 로우 제거 
+      no = control.endDataIdx + 1;
       while (rowChk) {
         rowChk = removeRow(no);
         no++;
       }
+
       start = current;
-      end = control.startDataIdx - 1;
+      end = current + Math.abs(c / option.rowHeight);
     }
 
-
-    control.startDataIdx = current;
-    control.endDataIdx = current + control.viewerDataCount;
-    rowTarget.insertAdjacentHTML('beforeend', setData(start, end, pagingCheck));
+    end = Math.round(end);
+    rowTarget.insertAdjacentHTML('beforeend', setData(control.startDataIdx, control.endDataIdx, pagingCheck));
     if (rowHeaderTarget) {
       if (freeze) {
-        rowHeaderTarget.insertAdjacentHTML('beforeend', setData(start, end, pagingCheck, true));
+        rowHeaderTarget.insertAdjacentHTML('beforeend', setData(control.startDataIdx, control.endDataIdx, pagingCheck, true));
       } else {
-        rowHeaderTarget.insertAdjacentHTML('beforeend', setRowHeaderCell(start, end, pagingCheck));
+        rowHeaderTarget.insertAdjacentHTML('beforeend', setRowHeaderCell(control.startDataIdx, control.endDataIdx, pagingCheck));
       }
     }
+    // rowTarget.insertAdjacentHTML('beforeend', setData(start, end, pagingCheck));
+    // if (rowHeaderTarget) {
+    //   if (freeze) {
+    //     rowHeaderTarget.insertAdjacentHTML('beforeend', setData(start, end, pagingCheck, true));
+    //   } else {
+    //     rowHeaderTarget.insertAdjacentHTML('beforeend', setRowHeaderCell(start, end, pagingCheck));
+    //   }
+    // }
 
     // console.log(`
     // ----------------------------------------------------------------------------------------
@@ -1694,6 +1908,7 @@ Grid.prototype.init = function (type, common) {
 
       return chk1 || chk2 ? true : false;
     }
+
   }
 
 }
@@ -1802,13 +2017,13 @@ Grid.prototype.downloadExcel = function (title) {
 
   const sheetData = sheetColumns.concat(newData);
 
-  title = title || '엑셀 다운로드';
+  title = title || 'DFMEA_비교';
   wb.props = {
     title: title,
   };
-  wb.SheetNames.push('sheet');
+  wb.SheetNames.push('DFMEA비교');
   var ws = XLSX.utils.aoa_to_sheet(sheetData);
-  wb.Sheets['sheet'] = ws;
+  wb.Sheets['DFMEA비교'] = ws;
 
   const wbout = XLSX.write(wb, {
     bookType: 'xlsx',
