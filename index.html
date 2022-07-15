@@ -55,50 +55,21 @@
 
 <body>
 
-<div style="width:80%;margin:20px auto;">
-  <div style="margin:20px 0; display:flex; justify-content: start;">
-    <button type="button" id="refresh" style="margin:0 5px;">refresh</button>
-    <button type="button" id="changeData" style="margin:0 5px;">change data</button>
-    <button type="button" id="changeColums" style="margin:0 5px;">change columns</button>
-    <button type="button" id="downloadExcel" style="margin:0 5px;">downloadExcel</button>
+  <div style="width:80%;margin:20px auto;">
+    <div style="margin:20px 0; display:flex; justify-content: start;">
+      <button type="button" id="refresh" style="margin:0 5px;">refresh</button>
+      <button type="button" id="changeData" style="margin:0 5px;">change data</button>
+      <button type="button" id="changeColums" style="margin:0 5px;">change columns</button>
+      <button type="button" id="downloadExcel" style="margin:0 5px;">downloadExcel</button>
+    </div>
+    <ul id="tab">
+      <li class="tab-contents on" id="grid1">
+        <div id="grid1_contents" style="height:500px;"></div>
+      </li>
+    </ul>
+
+    <!-- <div id="test" style="height:500px; overflow:auto;"></div> -->
   </div>
-  <ul id="tab-btns">
-    <li class="tab-btns on">grid1</li>
-    <li class="tab-btns">grid2</li>
-    <li class="tab-btns">grid3</li>
-    <li class="tab-btns">grid4</li>
-  </ul>
-  <ul id="tab">
-    <li class="tab-contents on" id="grid1">
-      <div id="grid1_contents" style="height:500px;"></div>
-    </li>
-    <li class="tab-contents" id="grid2">
-      <div id="grid2_contents" style="height:500px;"></div>
-    </li>
-    <li class="tab-contents" id="grid3">
-      <div id="grid3_contents" style="height:500px;"></div>
-    </li>
-    <li class="tab-contents" id="grid4">
-      <div id="grid4_contents" style="height:500px;"></div>
-    </li>
-  </ul>
-
-  <!-- <div id="test" style="height:500px; overflow:auto;"></div> -->
-</div>
-
-
-
-<hr>
-
-<div style="width:80%;margin:20px auto;">
-  <div style="display:flex; margin-bottom:10px;">
-    <button type="button" id="refColumn"> Ref 데이터 추가</button>
-    <button type="button" id="refColumn2"> Ref 데이터 변경</button>
-    <button type="button" id="addColumn"> 비교 데이터 추가</button>
-    <button type="button" id="excel" style="margin-left:auto;">Excel</button>
-  </div>
-  <div id="grid5" style="height:640px;"></div>
-</div>
 </body>
 
 </html>
