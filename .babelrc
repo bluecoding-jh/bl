@@ -1,8 +1,25 @@
 {
-  "presets": [["@babel/preset-env", {"targets": { "ie" : 11 }, "debug" : true} ]],
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "ie": 11
+      },
+      "debug": true
+    }]
+  ],
   "plugins": [
     ["@babel/plugin-transform-arrow-functions"],
-    ["@babel/plugin-transform-runtime", {"corejs" : 3}],
-    ["transform-remove-console", { "exclude": ["error", "warn"] }]
-  ]
+    ["@babel/plugin-transform-runtime", {
+      "corejs": 3
+    }]
+  ],
+  "env": {
+    "production": {
+      "plugins": [
+        ["transform-remove-console", {
+          "exclude": ["error", "warn"]
+        }]
+      ]
+    }
+  }
 }
