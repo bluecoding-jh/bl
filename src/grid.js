@@ -949,23 +949,24 @@ Grid.prototype.init = function (type, common) {
             }
           }
         } else {
-          if (col.hasOwnProperty('width')) {
-            if (col.width === '*') {
-              width = getFixedWidth(parentObj.style.width, parentObj.children);
-            } else {
-              if (typeof col.width === 'number') {
-                width = col.width;
-              } else if (typeof col.width === 'string' && col.indexOf('%') !== -1) {
-                width = parentObj.style.width * (Number(col.split('%')[0]) / 100);
-              } else {
-                throw new Error('넓이값 지정 오류 입니다.');
-              }
-            }
-          } else {
-            if (!(parentObj.hasOwnProperty('fold') && parentObj.fold)) {
-              width = parentObj.style.width / parentObj.children.length;
-            }
-          }
+          width = getFixedWidth(parentObj.style.width, parentObj.children);
+          // if (col.hasOwnProperty('width')) {
+          //   if (col.width === '*') {
+          //     width = getFixedWidth(parentObj.style.width, parentObj.children);
+          //   } else {
+          //     if (typeof col.width === 'number') {
+          //       width = col.width;
+          //     } else if (typeof col.width === 'string' && col.indexOf('%') !== -1) {
+          //       width = parentObj.style.width * (Number(col.split('%')[0]) / 100);
+          //     } else {
+          //       throw new Error('넓이값 지정 오류 입니다.');
+          //     }
+          //   }
+          // } else {
+          //   if (!(parentObj.hasOwnProperty('fold') && parentObj.fold)) {
+          //     width = parentObj.style.width / parentObj.children.length;
+          //   }
+          // }
         }
       }
 
@@ -985,27 +986,30 @@ Grid.prototype.init = function (type, common) {
       }
 
       function getFixedWidth(fullWidth, arr) {
-        let count = 0,
-          calcWidth = fullWidth;
-        arr.map(v => {
-          if (v.hasOwnProperty('width')) {
-            if (v.width === '*') {
-              count += 1;
-            } else {
-              if (typeof v.width === 'number') {
-                calcWidth -= v.width;
-              } else {
-                calcWidth -= fullWidth * (Number(v.width.split('%')[0]) / 100);
-              }
-            }
-          } else {
-            calcWidth -= 80;
-          }
-        });
-        count = count || 1;
-        calcWidth = calcWidth < 80 ? 80 : calcWidth;
-        return Number((calcWidth / count).toFixed());
+        return Number((fullWidth / arr.length).toFixed());
       }
+      // function getFixedWidth(fullWidth, arr) {
+      //   let count = 0,
+      //     calcWidth = fullWidth;
+      //   arr.map(v => {
+      //     if (v.hasOwnProperty('width')) {
+      //       if (v.width === '*') {
+      //         count += 1;
+      //       } else {
+      //         if (typeof v.width === 'number') {
+      //           calcWidth -= v.width;
+      //         } else {
+      //           calcWidth -= fullWidth * (Number(v.width.split('%')[0]) / 100);
+      //         }
+      //       }
+      //     } else {
+      //       calcWidth -= 80;
+      //     }
+      //   });
+      //   count = count || 1;
+      //   calcWidth = calcWidth < 80 ? 80 : calcWidth;
+      //   return Number((calcWidth / count).toFixed());
+      // }
     };
 
     return tmpl;
