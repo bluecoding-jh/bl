@@ -676,8 +676,8 @@ Compare.prototype.downloadExcel = function (title) {
     for (let i = 0; i < option.data.length; i++) {
       temp[0].push(option.data[i][key]);
       temp[0].push('');
-      temp[1].push('검토내용');
-      temp[1].push('RPN');
+      temp[1].push('');
+      temp[1].push('');
     }
 
     // DATA 정보 삽입
